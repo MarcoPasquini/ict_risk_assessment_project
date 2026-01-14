@@ -3,15 +3,15 @@
 #include <unistd.h>
 #include <string.h>
 
-#define CODE_LEN 10
-#define GUEST_LEN 32
-#define DATE_LEN 11
+#define DATE_LEN 16
+#define CODE_LEN 8
+#define GUEST_LEN 64
 #define PAGE_SIZE 20
 
 struct booking{
+    char date[DATE_LEN];
     char code[CODE_LEN];
     char guest_name[GUEST_LEN];
-    char date[DATE_LEN];
 };
 
 struct booking* booking_db;
@@ -44,21 +44,24 @@ void add_bookings(){
     int take_next_booking = 1;
     int i = 0;
     int j = 0;
+    int n_written = 0;
+    int n_args = 0;
     char user_next_choise = 0;
     struct booking booking_list[PAGE_SIZE];
     do{
         printf("Booking n.%d\n", i+1);
+        printf("Date: ");
+        read(0, booking_list[i].date, DATE_LEN);
         printf("Booking code: ");
         read(0, booking_list[i].code, CODE_LEN);
         printf("Guest name: ");
         read(0, booking_list[i].guest_name, GUEST_LEN);
-        printf("Date: ");
-        read(0, booking_list[i].date, DATE_LEN);
-        if (i < 19) {
+        n_written++;
+        if (i < PAGE_SIZE-1) {
             booking_list[i].date[DATE_LEN-1] = '\0';
             printf("> Do you want to add another booking? (y/n): ");
-            j = scanf(" %c%*c",&user_next_choise);
-            if ((j != 1) || ((user_next_choise != 'y' && (user_next_choise != 'Y')))){
+            n_args = scanf(" %c%*c",&user_next_choise);
+            if ((n_args != 1) || ((user_next_choise != 'y' && (user_next_choise != 'Y')))){
                 i++;
                 break;
             }
@@ -67,7 +70,7 @@ void add_bookings(){
         take_next_booking = i < PAGE_SIZE;
         i = j;
     } while (take_next_booking);
-    add_to_db(booking_list, i);
+    add_to_db(booking_list, n_written);
 }
 
 void list_bookings(){
@@ -89,9 +92,9 @@ void list_bookings(){
                 puts("> No more bookings to display.");
                 return;
             }
+            printf("  Date: %s\n", booking_list[j].date);
             printf("> Booking number: %s\n", booking_list[j].code);
             printf("  Guest name: %s\n", booking_list[j].guest_name);
-            printf("  Date: %s\n", booking_list[j].date);
             i = j;
             j = j + 1;
         } while (i < PAGE_SIZE);
@@ -103,7 +106,6 @@ void list_bookings(){
         page++;
     }
 }
-
 
 int take_user_choise(){
     int choise = 0;
