@@ -5,12 +5,13 @@ from host_state import get_host_state
 from exploits import run_exploits
 
 
-def start_engine():
+def start_engine(dir):
     host_state = get_host_state()
     report = {
         "host_info": get_host_state(),
-        "binaries_report": analyze_directory()
+        "binaries_report": analyze_directory(dir)
     }
+    print(report)
     return json.dumps(report, indent=4)
 
 
@@ -57,6 +58,13 @@ def is_elf_file(filepath):
         except:
             return False
 
-print(start_engine())
+if len(sys.argv) != 2:
+    print("Invalid command.")
+    print("Usage: python assessment_module.py [directory]")
+    exit(1)
+else:
+    directory = sys.argv[1]
+
+print(start_engine(directory))
 
 #Funziona per linux e file eseguibili elf.
