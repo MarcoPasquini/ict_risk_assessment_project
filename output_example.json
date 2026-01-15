@@ -1,0 +1,130 @@
+{'host_info': {'aslr_level': 2, 'os': 'Linux', 'kernel': '6.14.0-37-generic', 'glibc': '2.39'}, 'binaries_report': [{'filename': '../programs/mem_allocation_misuse/binaries/mem_allocation_misuse-medium', 'protections': {'aslr': False, 'pie': False, 'nx': True, 'relro': None, 'canary': True}, 'test_result': [{'exploit': '../programs/mem_allocation_misuse/binaries/mem_allocation_misuse_exploit-3.py', 'runs': 10, 'successes': 9}, {'exploit': '../programs/mem_allocation_misuse/binaries/mem_allocation_misuse_exploit-1.py', 'runs': 10, 'successes': 0}, {'exploit': '../programs/mem_allocation_misuse/binaries/mem_allocation_misuse_exploit-2.py', 'runs': 10, 'successes': 0}]}, {'filename': '../programs/mem_allocation_misuse/binaries/mem_allocation_misuse-low_remotelibc', 'protections': {'aslr': False, 'pie': False, 'nx': None, 'relro': None, 'canary': False}, 'test_result': [{'exploit': '../programs/mem_allocation_misuse/binaries/mem_allocation_misuse_exploit-3.py', 'runs': 10, 'successes': 0}, {'exploit': '../programs/mem_allocation_misuse/binaries/mem_allocation_misuse_exploit-1.py', 'runs': 10, 'successes': 10}, {'exploit': '../programs/mem_allocation_misuse/binaries/mem_allocation_misuse_exploit-2.py', 'runs': 10, 'successes': 6}]}, {'filename': '../programs/mem_allocation_misuse/binaries/libc.so.6', 'protections': {'aslr': True, 'pie': True, 'nx': True, 'relro': 'Full', 'canary': True}, 'test_result': []}, {'filename': '../programs/mem_allocation_misuse/binaries/mem_allocation_misuse-low', 'protections': {'aslr': False, 'pie': False, 'nx': None, 'relro': None, 'canary': False}, 'test_result': [{'exploit': '../programs/mem_allocation_misuse/binaries/mem_allocation_misuse_exploit-3.py', 'runs': 10, 'successes': 9}, {'exploit': '../programs/mem_allocation_misuse/binaries/mem_allocation_misuse_exploit-1.py', 'runs': 10, 'successes': 8}, {'exploit': '../programs/mem_allocation_misuse/binaries/mem_allocation_misuse_exploit-2.py', 'runs': 10, 'successes': 6}]}, {'filename': '../programs/mem_allocation_misuse/binaries/mem_allocation_misuse-high', 'protections': {'aslr': True, 'pie': True, 'nx': True, 'relro': 'Full', 'canary': True}, 'test_result': [{'exploit': '../programs/mem_allocation_misuse/binaries/mem_allocation_misuse_exploit-3.py', 'runs': 10, 'successes': 0}, {'exploit': '../programs/mem_allocation_misuse/binaries/mem_allocation_misuse_exploit-1.py', 'runs': 10, 'successes': 0}, {'exploit': '../programs/mem_allocation_misuse/binaries/mem_allocation_misuse_exploit-2.py', 'runs': 10, 'successes': 0}]}]}
+{
+    "host_info": {
+        "aslr_level": 2,
+        "os": "Linux",
+        "kernel": "6.14.0-37-generic",
+        "glibc": "2.39"
+    },
+    "binaries_report": [
+        {
+            "filename": "../programs/mem_allocation_misuse/binaries/mem_allocation_misuse-medium",
+            "protections": {
+                "aslr": false,
+                "pie": false,
+                "nx": true,
+                "relro": null,
+                "canary": true
+            },
+            "test_result": [
+                {
+                    "exploit": "../programs/mem_allocation_misuse/binaries/mem_allocation_misuse_exploit-3.py",
+                    "runs": 10,
+                    "successes": 9
+                },
+                {
+                    "exploit": "../programs/mem_allocation_misuse/binaries/mem_allocation_misuse_exploit-1.py",
+                    "runs": 10,
+                    "successes": 0
+                },
+                {
+                    "exploit": "../programs/mem_allocation_misuse/binaries/mem_allocation_misuse_exploit-2.py",
+                    "runs": 10,
+                    "successes": 0
+                }
+            ]
+        },
+        {
+            "filename": "../programs/mem_allocation_misuse/binaries/mem_allocation_misuse-low_remotelibc",
+            "protections": {
+                "aslr": false,
+                "pie": false,
+                "nx": null,
+                "relro": null,
+                "canary": false
+            },
+            "test_result": [
+                {
+                    "exploit": "../programs/mem_allocation_misuse/binaries/mem_allocation_misuse_exploit-3.py",
+                    "runs": 10,
+                    "successes": 0
+                },
+                {
+                    "exploit": "../programs/mem_allocation_misuse/binaries/mem_allocation_misuse_exploit-1.py",
+                    "runs": 10,
+                    "successes": 10
+                },
+                {
+                    "exploit": "../programs/mem_allocation_misuse/binaries/mem_allocation_misuse_exploit-2.py",
+                    "runs": 10,
+                    "successes": 6
+                }
+            ]
+        },
+        {
+            "filename": "../programs/mem_allocation_misuse/binaries/libc.so.6",
+            "protections": {
+                "aslr": true,
+                "pie": true,
+                "nx": true,
+                "relro": "Full",
+                "canary": true
+            },
+            "test_result": []
+        },
+        {
+            "filename": "../programs/mem_allocation_misuse/binaries/mem_allocation_misuse-low",
+            "protections": {
+                "aslr": false,
+                "pie": false,
+                "nx": null,
+                "relro": null,
+                "canary": false
+            },
+            "test_result": [
+                {
+                    "exploit": "../programs/mem_allocation_misuse/binaries/mem_allocation_misuse_exploit-3.py",
+                    "runs": 10,
+                    "successes": 9
+                },
+                {
+                    "exploit": "../programs/mem_allocation_misuse/binaries/mem_allocation_misuse_exploit-1.py",
+                    "runs": 10,
+                    "successes": 8
+                },
+                {
+                    "exploit": "../programs/mem_allocation_misuse/binaries/mem_allocation_misuse_exploit-2.py",
+                    "runs": 10,
+                    "successes": 6
+                }
+            ]
+        },
+        {
+            "filename": "../programs/mem_allocation_misuse/binaries/mem_allocation_misuse-high",
+            "protections": {
+                "aslr": true,
+                "pie": true,
+                "nx": true,
+                "relro": "Full",
+                "canary": true
+            },
+            "test_result": [
+                {
+                    "exploit": "../programs/mem_allocation_misuse/binaries/mem_allocation_misuse_exploit-3.py",
+                    "runs": 10,
+                    "successes": 0
+                },
+                {
+                    "exploit": "../programs/mem_allocation_misuse/binaries/mem_allocation_misuse_exploit-1.py",
+                    "runs": 10,
+                    "successes": 0
+                },
+                {
+                    "exploit": "../programs/mem_allocation_misuse/binaries/mem_allocation_misuse_exploit-2.py",
+                    "runs": 10,
+                    "successes": 0
+                }
+            ]
+        }
+    ]
+}

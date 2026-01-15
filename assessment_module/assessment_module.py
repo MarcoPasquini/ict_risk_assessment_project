@@ -11,7 +11,6 @@ def start_engine(dir):
         "host_info": get_host_state(),
         "binaries_report": analyze_directory(dir)
     }
-    print(report)
     return json.dumps(report, indent=4)
 
 
