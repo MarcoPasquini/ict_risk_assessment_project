@@ -124,7 +124,7 @@ if __name__ == "__main__":
     task = {
         "type": TaskType.COMPLETE,
         "target_directory": directory,
-        "repeat_exploit": 1
+        "repeat_exploit": 5
     }
 
     print(json.dumps(start_engine(task), indent=4))
