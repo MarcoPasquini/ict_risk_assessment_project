@@ -46,7 +46,7 @@ def start_engine(task: dict):
     except Exception as e:
         return {"status": "ERROR", "reason": str(e)}
 
-def is_permitted_operation(task: TaskType, permissions: dict) -> bool:
+def is_permitted_operation(task: TaskType, permissions: dict):
     can_scan = permissions.get("allow_scanning", False)
     can_exploit = permissions.get("allow_exploitation", False)
 
@@ -85,7 +85,7 @@ def analyze_directory(task: TaskType, target_dir: Path, repetitions: int):
             
     return binaries_report
 
-def get_binary_protections(binary_path):
+def get_binary_protections(binary_path: str):
     try:
         elf = ELF(binary_path, checksec=False)
         
@@ -103,7 +103,7 @@ def get_binary_protections(binary_path):
         return {"error": str(e)}
 
 # Magic bytes to know if it's a binary file
-def is_elf_file(filepath):
+def is_elf_file(filepath: str):
     if os.path.isfile(filepath): 
         try:
             with open(filepath, 'rb') as f:
@@ -124,7 +124,7 @@ if __name__ == "__main__":
     task = {
         "type": TaskType.COMPLETE,
         "target_directory": directory,
-        "repeat_exploit": 5
+        "repeat_exploit": 1
     }
 
     print(json.dumps(start_engine(task), indent=4))
