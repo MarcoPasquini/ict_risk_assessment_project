@@ -123,5 +123,4 @@ if __name__ == "__main__":
 
     print(json.dumps(start_engine(task_type, directory), indent=4))
 
-
 #Works for Linux and elf files
