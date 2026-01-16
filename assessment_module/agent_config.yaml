@@ -1,0 +1,5 @@
+host_id: "vm-test-01"
+permissions:
+  allow_scanning: true
+  allow_exploitation: true
+  max_cpu_usage_per_exploit: 20%
