@@ -17,11 +17,13 @@ class AgentMode(str, Enum):
 
 CONFIG_FILE = Path("agent_config.yaml")
 
-def start_engine(task_type: str, target_dir: str = "."):
+def start_engine(task: dict):
     try:
-        task = TaskType(task_type)
+        task_type = TaskType(task["type"])
+        target_dir = task["target_directory"]
+        repetitions = task["repeat_exploit"]
     except ValueError:
-        return {"status": "FORBIDDEN", "reason": f"Invalid task type: {task_type}"}
+        return {"status": "FORBIDDEN", "reason": f"Invalid task: {task}"}
 
     try:
         with open(CONFIG_FILE, "r") as f:
@@ -29,16 +31,16 @@ def start_engine(task_type: str, target_dir: str = "."):
     except FileNotFoundError:
         return {"status": "ERROR", "reason": "Config file missing"}
 
-    if not is_permitted_operation(task, config.get('permissions', {})):
-        print(f"[SECURITY] Task {task.value} blocked by local policy.")
+    if not is_permitted_operation(task_type, config.get('permissions', {})):
+        print(f"[SECURITY] Task {task_type} blocked by local policy.")
         return {"status": "FORBIDDEN", "reason": "Consensus rules prevented execution"}
 
     try:
         report = {
             "status": "SUCCESS",
-            "task": task.value,
+            "task": task_type,
             "host_info": get_host_state(),
-            "binaries_report": analyze_directory(task, Path(target_dir))
+            "binaries_report": analyze_directory(task_type, Path(target_dir), repetitions)
         }
         return report
     except Exception as e:
@@ -59,7 +61,7 @@ def is_permitted_operation(task: TaskType, permissions: dict) -> bool:
     
     return False
 
-def analyze_directory(task: TaskType, target_dir: Path):
+def analyze_directory(task: TaskType, target_dir: Path, repetitions: int):
     binaries_report = []
     
     if not target_dir.exists():
@@ -77,7 +79,7 @@ def analyze_directory(task: TaskType, target_dir: Path):
                 binary_report["protections"] = get_binary_protections(filepath)
             
             if task == TaskType.EXPLOIT or task == TaskType.COMPLETE:
-                binary_report["test_result"] = run_exploits(filepath) 
+                binary_report["test_result"] = run_exploits(filepath, repetitions) 
             
             binaries_report.append(binary_report)
             
@@ -119,8 +121,12 @@ if __name__ == "__main__":
     else:
         directory = sys.argv[1]
 
-    task_type = "SCAN_AND_EXPLOIT"
+    task = {
+        "type": TaskType.COMPLETE,
+        "target_directory": directory,
+        "repeat_exploit": 5
+    }
 
-    print(json.dumps(start_engine(task_type, directory), indent=4))
+    print(json.dumps(start_engine(task), indent=4))
 
 #Works for Linux and elf files
