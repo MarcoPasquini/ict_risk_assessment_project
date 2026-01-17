@@ -22,6 +22,7 @@ def start_engine(task: dict):
         task_type = TaskType(task["type"])
         target_dir = task["target_directory"]
         repetitions = task["repeat_exploit"]
+        repetitions = task["repeat_exploit"]
     except ValueError:
         return {"status": "FORBIDDEN", "reason": f"Invalid task: {task}"}
 
@@ -31,7 +32,7 @@ def start_engine(task: dict):
     except FileNotFoundError:
         return {"status": "ERROR", "reason": "Config file missing"}
 
-    if not is_permitted_operation(task_type, config.get('permissions', {})):
+    if not is_permitted_operation(task_type, config.get("permissions", {})):
         print(f"[SECURITY] Task {task_type} blocked by local policy.")
         return {"status": "FORBIDDEN", "reason": "Consensus rules prevented execution"}
 
@@ -40,7 +41,7 @@ def start_engine(task: dict):
             "status": "SUCCESS",
             "task": task_type,
             "host_info": get_host_state(),
-            "binaries_report": analyze_directory(task_type, Path(target_dir), repetitions)
+            "binaries_report": analyze_directory(task_type, Path(target_dir), repetitions, config["permissions"].get("max_cpu_usage_per_exploit", "0"))
         }
         return report
     except Exception as e:
@@ -61,7 +62,7 @@ def is_permitted_operation(task: TaskType, permissions: dict):
     
     return False
 
-def analyze_directory(task: TaskType, target_dir: Path, repetitions: int):
+def analyze_directory(task: TaskType, target_dir: Path, repetitions: int, max_cpu_usage_per_exploit: int):
     binaries_report = []
     
     if not target_dir.exists():
@@ -79,7 +80,7 @@ def analyze_directory(task: TaskType, target_dir: Path, repetitions: int):
                 binary_report["protections"] = get_binary_protections(filepath)
             
             if task == TaskType.EXPLOIT or task == TaskType.COMPLETE:
-                binary_report["test_result"] = run_exploits(filepath, repetitions) 
+                binary_report["test_result"] = run_exploits(filepath, repetitions, max_cpu_usage_per_exploit) 
             
             binaries_report.append(binary_report)
             
@@ -124,7 +125,7 @@ if __name__ == "__main__":
     task = {
         "type": TaskType.COMPLETE,
         "target_directory": directory,
-        "repeat_exploit": 5
+        "repeat_exploit": 3
     }
 
     print(json.dumps(start_engine(task), indent=4))
