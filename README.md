@@ -85,15 +85,13 @@ To measure the efficacy of system hardening, each vulnerable program is compiled
 | **Medium** | **Stack protection** enabled. Prevents simple linear stack overflows and executable stack. | `gcc -fstack-protector-all -no-pie -z norelro bin.c -o bin-medium` |
 | **High** | **Stack protection + PIE + RELRO**. Randomized binary address space and read-only relocation table. | `gcc -fstack-protector-all -pie -z relro bin.c -o bin-high` |
 
+### 4. Virtual Machine Setup
+
+* **Install & Setup VirtualBox**: After installing VirtualBox an Ubuntu Server machine is created.
+* **Setup Machine**: All necessary packets and libraries are installed, port forwarding is setted up to enable SSH connection.
+* **Snapshot creation**: Creating a snapshot "ReadyState".
 
 ## to-do:
-* **Virtual Environment**: Setting up the virtual environment, with snapshot, in which to have vulnerable programs and exploits.
 * **Twin module**: Implement the twin module that receives the JSON report.
 * **Secure Communication**: Create a secure communiaction channel with **Mutual TLS (mTLS)**, ensuring that only the authenticated Twin Server can command the Agent.
-* **CPU usage limitation**: The VM must limit the usage of CPU to prevent DoS.
 * **Updating probabilities**: The Twin must update the probabilities based on the result of the local module report.
-
-
-
-
-
