@@ -71,8 +71,6 @@ def analyze_directory(task: TaskType, target_dir: Path, repetitions: int, max_cp
     for item in target_dir.rglob('*'):
         filepath = str(item)
         if is_elf_file(filepath):
-
-            print(filepath)
             
             binary_report = {
                 "filename": filepath,
