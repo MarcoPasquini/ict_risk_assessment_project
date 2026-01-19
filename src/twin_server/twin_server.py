@@ -19,7 +19,6 @@ class TaskType(str, Enum):
 HOST_URL = "https://localhost:5000/command"
 
 def send_task(task_type: TaskType, target: str, repeats: int):
-    print(task_type, target, repeats)
     task = {
         "type": task_type.value,
         "target_directory": target,
@@ -33,20 +32,10 @@ def send_task(task_type: TaskType, target: str, repeats: int):
             verify=str(CA_CERT), 
             cert=CLIENT_CERT
         )
-        
-        if not response.ok:
-            # MODIFICA QUI: Leggi il JSON dell'errore
-            try:
-                error_json = response.json()
-                print(f"[SERVER ERROR] {response.status_code}")
-                print(f"MOTIVO: {error_json.get('reason')}")
-            except:
-                # Se il server è morto male e non ha mandato JSON
-                print(f"[SERVER ERROR] {response.status_code} - {response.text}")
-            return
+
         response.raise_for_status()
         
-        print("[CONTROLLER] Risposta ricevuta:")
+        print("[CONTROLLER] Response:")
         print(json.dumps(response.json(), indent=4))
         
     except requests.exceptions.SSLError as ssl_err:
