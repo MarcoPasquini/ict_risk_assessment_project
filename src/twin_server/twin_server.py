@@ -35,7 +35,7 @@ def send_task(task_type: TaskType, target: str, repeats: int):
 
         response.raise_for_status()
         
-        print("[CONTROLLER] Response:")
+        print("Agent response:")
         print(json.dumps(response.json(), indent=4))
         
     except requests.exceptions.SSLError as ssl_err:

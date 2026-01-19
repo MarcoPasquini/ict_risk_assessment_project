@@ -2,7 +2,7 @@ import os
 import json
 import yaml
 from enum import Enum
-from pwn import *
+from pwn import ELF, context
 from host_state import get_host_state
 from exploits import run_exploits
 import ssl
@@ -12,11 +12,12 @@ from pathlib import Path
 app = Flask(__name__)
 
 BASE_DIR = Path(__file__).resolve().parent
-PROGRAMS_DIR = BASE_DIR / ".." / "programs"
-CONFIG_DIR = BASE_DIR / "config"
-CONFIG_FILE = CONFIG_DIR / "agent_config.yaml"
+PROJECT_ROOT = BASE_DIR.parent
 
-CERTS_DIR = Path("certs")
+PROGRAMS_DIR = (PROJECT_ROOT / "programs").resolve()
+CONFIG_FILE = (BASE_DIR / "config" / "agent_config.yaml").resolve()
+CERTS_DIR = (PROJECT_ROOT.parent / "certs").resolve()
+
 CA_CERT = CERTS_DIR / "ca.crt"
 SERVER_CERT = CERTS_DIR / "server.crt"
 SERVER_KEY = CERTS_DIR / "server.key"
@@ -51,6 +52,11 @@ def start_engine(task: dict):
         return {"status": "FORBIDDEN", "reason": f"Invalid task: {task}"}
 
     try:
+        target_directory = get_safe_path(PROGRAMS_DIR, target_dir)
+    except Exception as e:
+        return {"status": "FORBIDDEN", "reason": f"{e}"}
+
+    try:
         with open(CONFIG_FILE, "r") as f:
             config = yaml.safe_load(f)
     except FileNotFoundError:
@@ -65,7 +71,7 @@ def start_engine(task: dict):
             "status": "SUCCESS",
             "task": task_type,
             "host_info": get_host_state(),
-            "binaries_report": analyze_directory(task_type, PROGRAMS_DIR / target_dir, repetitions, config["permissions"].get("max_cpu_usage_per_exploit", "0"))
+            "binaries_report": analyze_directory(task_type, target_directory, repetitions, config["permissions"].get("max_cpu_usage_per_exploit", "0"))
         }
         return report
     except Exception as e:
@@ -88,22 +94,21 @@ def is_permitted_operation(task: TaskType, permissions: dict):
 
 def analyze_directory(task: TaskType, target_dir: Path, repetitions: int, max_cpu_usage_per_exploit: int):
     binaries_report = []
-    
     if not target_dir.exists():
         return []
 
     for item in target_dir.rglob('*'):
-        filepath = str(item)
+        filepath = Path(item).resolve()
         if is_elf_file(filepath):
             binary_report = {
-                "filename": Path(filepath).resolve(),
+                "filename": str(Path(filepath).resolve()),
             }
 
             if task == TaskType.SCAN or task == TaskType.COMPLETE:
                 binary_report["protections"] = get_binary_protections(filepath)
             
             if task == TaskType.EXPLOIT or task == TaskType.COMPLETE:
-                binary_report["test_result"] = run_exploits(filepath, repetitions, max_cpu_usage_per_exploit) 
+                binary_report["test_result"] = run_exploits(str(filepath), repetitions, max_cpu_usage_per_exploit)
             
             binaries_report.append(binary_report)
             
@@ -136,20 +141,32 @@ def is_elf_file(filepath: str):
         except:
             return False
 
+def get_safe_path(base_directory: str, unsafe_input: str):
+    base_path = Path(base_directory).resolve()
+    
+    clean_input = unsafe_input.lstrip("/")
+    
+    full_path = (base_path / clean_input).resolve()
+    
+    if not full_path.is_relative_to(base_path):
+        raise PermissionError(f"Blocked access to directory: {unsafe_input}")
+    
+    return full_path
+
 if __name__ == '__main__':
-    # Configurazione SSL per mTLS
+    # Setup SSL for mTLS
     context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
     
-    # 1. Carica le mie credenziali (Server)
+    # Load credentials
     context.load_cert_chain(certfile=SERVER_CERT, keyfile=SERVER_KEY)
     
-    # 2. Carica la CA per verificare chi mi chiama
+    # Load CA to verify the requester
     context.load_verify_locations(cafile=CA_CERT)
     
-    # 3. OBBLIGA il client a presentare un certificato valido
+    # Requester must provide a certificate
     context.verify_mode = ssl.CERT_REQUIRED 
 
-    print("[AGENT] In ascolto su port 5000 (mTLS Enabled)...")
+    print("[AGENT] Listening on port 5000 (mTLS Enabled)...")
     app.run(host='0.0.0.0', port=5000, ssl_context=context)
 
 #Works for Linux and elf files
