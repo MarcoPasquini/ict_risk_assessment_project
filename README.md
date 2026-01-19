@@ -27,39 +27,79 @@ The data collected is sent securely to the Central Twin to update Bayesian prior
 
 ---
 
-## Installation & Prerequisites
 
-### Requirements
-* **OS:** Linux (Tested on Debian/Ubuntu)
+
+## Architecture
+
+The system operates in a closed loop to calculate the empirical probability of success (`p_hat`).
+
+### The Assessment Loop
+1.  **Request:** The Twin Server sends a secure command (static scan, active exploit or both) to the local module targeting a specific directory where the binary to test are located.
+2.  **Validation:** The Agent verifies the signature and checks `agent_config.yaml` for authorization.
+3.  **Execution:** For every binary in the directory, the module finds and runs the valid exploits N times (as requested by the Twin). Before every exploit run, the snapshot is restored to reset the VM to a clean state.
+4.  **Report:** JSON result is sent to the Twin to update the probabilities.
+
+#### Report Example
+In the `output_example.json` file is an example of the JSON transmitted to the Twin.
+
+---
+## Installation & Setup
+
+### 1. Requirements
+* **Host OS:** Linux (Debian/Ubuntu)
+* **Hypervisor:** VirtualBox
 * **Python:** 3.8+
 * **Privileges:** Root access is required to read protected configs and manage processes.
 
-### Dependencies
-Install the required Python packages:
+### 2. Quick Start
+
+Clone the repository and set up the environment:
 
 ```bash
+git clone https://github.com/MarcoPasquini/ict_risk_assessment_project.git
+cd ict_risk_assessment_project
+
+# Create Virtual Environment
+python3 -m venv venv
+source venv/bin/activate
+
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-## Configuration
-The Agent's behavior is governed by the configuration file `agent_config.yaml`. To ensure security and anti-reconnaissance, this file must be owned by root and set to mode 600.
+### 3. Security Configuration (mTLS)
+Generate the Certificate Authority (CA) and sign keys for both the Host Agent and the Twin Server.
+
+```bash
+chmod +x scripts/generate_certs.sh
+./scripts/generate_certs.sh
+```
+Artifacts will be stored in the certs/ directory.
+
+### 4. Agent Configuration
+The behavior is governed by agent_config.yaml. For security, restrict access to root only.
 
 ```bash
 sudo chown root:root agent_config.yaml
 sudo chmod 600 agent_config.yaml
 ```
 
-## Calculation of p_hat
-To calculate `p_hat` (empirical probability), the Agent orchestrates the following loop:
+## Usage
 
-* **Request**: The Twin sends the command to the local module, which can be only the static scan, the active exploitation or both. The command includes the directory where the binary to test are located.
-* **Check**: The module verifies `agent_config.yaml` locally.
-* **Execute**: For every binary in the directory, the module finds and runs the valid exploits N times (as requested by the Twin). Before every exploit run, the snapshot is restored to reset the VM to a clean state.
-* **Report**: JSON result is sent to the Twin.
-* **Update**: The twin updates the probabilities.
+### Step 1: Start the Host Agent (Server)
+This service runs on the host machine, listening for commands.
 
-#### Report Example
-In the `output_example.json` file is an example of the JSON transmitted to the Twin.
+```bash
+python3 src/assessment_module/assessment_module.py
+```
+
+### Step 2: Trigger a Task
+Send a command from the controller to the agent.
+
+```bash
+# Syntax: python3 twin_server.py [TASK_TYPE] [TARGET_DIR] [REPETITIONS]
+python3 src/twin_server/twin_server.py SCAN_AND_EXPLOIT logging_system 3
+```
 
 ## Experimental Environment Setup
 
@@ -92,6 +132,4 @@ To measure the efficacy of system hardening, each vulnerable program is compiled
 * **Snapshot creation**: Creating a snapshot "ReadyState".
 
 ## to-do:
-* **Twin module**: Implement the twin module that receives the JSON report.
-* **Secure Communication**: Create a secure communiaction channel with **Mutual TLS (mTLS)**, ensuring that only the authenticated Twin Server can command the Agent.
 * **Updating probabilities**: The Twin must update the probabilities based on the result of the local module report.
