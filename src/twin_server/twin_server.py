@@ -64,4 +64,4 @@ if __name__ == "__main__":
         task_type = sys.argv[1]
         target = sys.argv[2]
         repetitions = sys.argv[3]
-        send_task(task_type, target, repetitions)
+        send_task(TaskType(task_type), target, repetitions)
