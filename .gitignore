@@ -11,3 +11,9 @@ env/
 .vscode/
 .idea/
 .DS_Store
+
+certs/
+*.key
+*.crt
+*.csr
+*.pem
