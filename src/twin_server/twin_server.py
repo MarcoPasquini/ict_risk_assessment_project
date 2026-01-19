@@ -1,5 +1,6 @@
 import requests
 import json
+import sys
 from pathlib import Path
 from enum import Enum
 
@@ -54,4 +55,13 @@ def send_task(task_type: TaskType, target: str, repeats: int):
         print(f"[ERROR] {e}")
 
 if __name__ == "__main__":
-    send_task(TaskType.SCAN, "logging_system", 3)
+
+    if len(sys.argv) != 4:
+        print("Invalid command.")
+        print("Usage: python3 twin_server.py [TASK_TYPE] [TARGET_DIR] [REPETITIONS]")
+        exit(1)
+    else:
+        task_type = sys.argv[1]
+        target = sys.argv[2]
+        repetitions = sys.argv[3]
+        send_task(task_type, target, repetitions)
