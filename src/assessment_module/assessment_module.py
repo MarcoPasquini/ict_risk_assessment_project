@@ -34,8 +34,6 @@ class AgentMode(str, Enum):
 def handle_command():
     try:
         data = request.json
-        
-        print(f"[AGENT] Ricevuto comando sicuro: {data}")
 
         result_data = start_engine(data)
 
@@ -97,10 +95,8 @@ def analyze_directory(task: TaskType, target_dir: Path, repetitions: int, max_cp
     for item in target_dir.rglob('*'):
         filepath = str(item)
         if is_elf_file(filepath):
-            print(filepath)
-            print(Path(filepath))
             binary_report = {
-                "filename": filepath,
+                "filename": Path(filepath).resolve(),
             }
 
             if task == TaskType.SCAN or task == TaskType.COMPLETE:
