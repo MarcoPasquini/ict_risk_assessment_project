@@ -18,7 +18,7 @@ class TaskType(str, Enum):
 
 HOST_URL = "https://localhost:5000/command"
 
-def send_task(task_type: TaskType, target: str, repeats: int):
+def send_task(host: str, task_type: TaskType, target: str, repeats: int):
     task = {
         "type": task_type.value,
         "target_directory": target,
@@ -35,8 +35,7 @@ def send_task(task_type: TaskType, target: str, repeats: int):
 
         response.raise_for_status()
         
-        print("Agent response:")
-        print(json.dumps(response.json(), indent=4))
+        return json.dumps(response.json(), indent=4)
         
     except requests.exceptions.SSLError as ssl_err:
         print(f"[ERROR] Unauthorized comunication.\n{ssl_err}")
@@ -53,4 +52,6 @@ if __name__ == "__main__":
         task_type = sys.argv[1]
         target = sys.argv[2]
         repetitions = sys.argv[3]
-        send_task(TaskType(task_type), target, repetitions)
+        response = send_task(HOST_URL, TaskType(task_type), target, repetitions)
+        print("Agent response:")
+        print(response)
