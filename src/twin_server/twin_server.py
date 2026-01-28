@@ -65,7 +65,7 @@ if __name__ == "__main__":
         task_type = sys.argv[1]
         target = sys.argv[2]
         repetitions = sys.argv[3]
-        response = send_task(HOST_URL, TaskType(task_type), target, repetitions)
+        response = send_task(HOST_URL, TaskType(task_type), target, int(repetitions))
         print("Agent response:")
         print(response)
 
@@ -91,7 +91,7 @@ def process_notline_paths(json_file_path, repetitions=5):
 
                 print(f"Checking protections on binary {program} of {host}...")
 
-                task_result = send_task(hosts_path[host], TaskType.COMPLETE, program, repetitions)
+                task_result = send_task(hosts_path[host], TaskType.COMPLETE, program, int(repetitions))
                 
                 new_risk = calculate_new_risk(risk_score, task_result, program)
                 print(f"New risk is: {new_risk}")
