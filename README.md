@@ -37,7 +37,7 @@ The system operates in a closed loop to calculate the empirical probability of s
 1.  **Request:** The Twin Server sends a secure command (static scan, active exploit or both) to the local module targeting a specific directory where the binary to test are located.
 2.  **Validation:** The Agent verifies the signature and checks `agent_config.yaml` for authorization.
 3.  **Execution:** For every binary in the directory, the module finds and runs the valid exploits N times (as requested by the Twin). Before every exploit run, the snapshot is restored to reset the VM to a clean state.
-4.  **Report:** JSON result is sent to the Twin to update the probabilities.
+4.  **Report:** JSON result is sent to the Twin to update the probabilities. It is provided a possible function to update the risk_score.
 
 #### Report Example
 In the `output_example.json` file is an example of the JSON transmitted to the Twin.
@@ -130,6 +130,3 @@ To measure the efficacy of system hardening, each vulnerable program is compiled
 * **Install & Setup VirtualBox**: After installing VirtualBox an Ubuntu Server machine is created.
 * **Setup Machine**: All necessary packets and libraries are installed, port forwarding is setted up to enable SSH connection.
 * **Snapshot creation**: Creating a snapshot "ReadyState".
-
-## to-do:
-* **Updating probabilities**: The Twin must update the probabilities based on the result of the local module report.
