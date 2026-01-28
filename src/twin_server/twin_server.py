@@ -35,7 +35,7 @@ def send_task(host: str, task_type: TaskType, target: str, repeats: int):
     task = {
         "type": task_type.value,
         "target_directory": target,
-        "repeat_exploit": 3
+        "repeat_exploit": repeats
     }
     
     try:
@@ -73,7 +73,7 @@ if __name__ == "__main__":
 def process_notline_paths(json_file_path, repetitions=5):
     try:
         with open(json_file_path, 'r', encoding='utf-8') as f:
-        data = json.load(f)
+            data = json.load(f)
 
         print(f"Loaded {len(data['vulnerable_paths'])} potentials paths from NotLine.")
 
