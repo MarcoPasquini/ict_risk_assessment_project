@@ -100,8 +100,10 @@ def analyze_directory(task: TaskType, target_dir: Path, repetitions: int, max_cp
     for item in target_dir.rglob('*'):
         filepath = Path(item).resolve()
         if is_elf_file(filepath):
+            filename = Path(filepath)
             binary_report = {
-                "filename": str(Path(filepath).resolve()),
+                "filename": str(filename),
+                "size": filename.stat().st_size
             }
 
             if task == TaskType.SCAN or task == TaskType.COMPLETE:
