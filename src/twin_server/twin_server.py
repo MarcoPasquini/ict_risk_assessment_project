@@ -68,7 +68,7 @@ if __name__ == "__main__":
         repetitions = sys.argv[3]
         response = send_task(HOST_URL, TaskType(task_type), target, int(repetitions))
         print("Agent response:")
-        print(response)
+        print(json.dumps(response, indent=4))
         evaluate_statistics(response)
 
 # Update risk score based on the result of the active module

@@ -46,7 +46,7 @@ def plot_statistics(data):
     plot_attack_statistics_on_file(df)
     plot_asr(df)
 
-def plot_asr(df, output_filepath="./"):
+def plot_asr(df, output_filepath="./results/"):
     pivot_df = df.pivot(index='Binary', columns='Mode', values='p_hat')
 
     pivot_df['ASR_Medium'] = (1 - (pivot_df['medium'] / pivot_df['low'])) * 100
@@ -86,7 +86,7 @@ def plot_asr(df, output_filepath="./"):
     print("Attack success reduction saved.")
     plt.close()
 
-def save_binary_size_overhead_plot(df, output_filepath="./"):
+def save_binary_size_overhead_plot(df, output_filepath="./results/"):
 
     df['size'] = pd.to_numeric(df['size'])
     
@@ -131,7 +131,7 @@ def save_binary_size_overhead_plot(df, output_filepath="./"):
     print("Binary size overhead saved.")
     plt.close()
 
-def plot_time_to_compromise_on_file(df, output_filepath="./"):
+def plot_time_to_compromise_on_file(df, output_filepath="./results/"):
     order_modes = ['low', 'medium', 'high']
     plt.figure(figsize=(12, 6))
     chart = sns.barplot(
@@ -143,7 +143,7 @@ def plot_time_to_compromise_on_file(df, output_filepath="./"):
         width=0.6
     )
     plt.title('Time to Compromise (Higher is Better)', fontsize=16)
-    plt.ylabel('Seconds to Pwn', fontsize=12)
+    plt.ylabel('Seconds to compromission', fontsize=12)
     plt.xlabel('Binary', fontsize=12)
     plt.legend(title='Protection Level')
     plt.tight_layout()
@@ -152,7 +152,7 @@ def plot_time_to_compromise_on_file(df, output_filepath="./"):
     print("Time to compromise saved.")
     plt.close()
 
-def plot_attack_statistics_on_file(df, output_filepath="./"):
+def plot_attack_statistics_on_file(df, output_filepath="./results/"):
     plt.figure(figsize=(10, 6))
     sns.set_theme(style="white")
     sns.set_context("notebook", font_scale=1.1)
