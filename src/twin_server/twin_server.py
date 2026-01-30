@@ -3,6 +3,7 @@ import json
 import sys
 from pathlib import Path
 from enum import Enum
+from twin_statistics import evaluate_statistics
 
 CERTS_DIR = Path("certs")
 CA_CERT = CERTS_DIR / "ca.crt" 
@@ -48,7 +49,7 @@ def send_task(host: str, task_type: TaskType, target: str, repeats: int):
 
         response.raise_for_status()
         
-        return json.dumps(response.json(), indent=4)
+        return response.json()
         
     except requests.exceptions.SSLError as ssl_err:
         print(f"[ERROR] Unauthorized comunication.\n{ssl_err}")
@@ -68,6 +69,7 @@ if __name__ == "__main__":
         response = send_task(HOST_URL, TaskType(task_type), target, int(repetitions))
         print("Agent response:")
         print(response)
+        evaluate_statistics(response)
 
 # Update risk score based on the result of the active module
 def process_notline_paths(json_file_path, repetitions=5):
@@ -110,9 +112,9 @@ def calculate_new_risk(risk_score, report, program_name):
         return new_risk
     return new_risk * 0.5
 
-def retrive_binary_report(report, binary, program_name):
+def retrive_binary_report(report_result, binary, program_name):
     try:
-        binaries_report = json.loads(report)["binaries_report"]
+        binaries_report = report_result["binaries_report"]
         for report in binaries_report:
             if program_name in report["filename"]:
                 return report

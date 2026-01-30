@@ -1,3 +1,5 @@
 PyYAML
 pwntools
 flask
+seaborn
+pandas
