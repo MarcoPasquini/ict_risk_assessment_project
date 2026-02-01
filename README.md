@@ -130,3 +130,26 @@ To measure the efficacy of system hardening, each vulnerable program is compiled
 * **Install & Setup VirtualBox**: After installing VirtualBox an Ubuntu Server machine is created.
 * **Setup Machine**: All necessary packets and libraries are installed, port forwarding is setted up to enable SSH connection.
 * **Snapshot creation**: Creating a snapshot "ReadyState".
+
+## Data Analysis & Visualization
+
+ To interpret the report collected during the assessment loop, the system includes a statistical post-processing module.  
+ This module parses the JSON reports and generates graphical visualizations using `Pandas` and `Seaborn` to quantify the "Security vs. Performance" trade-offs.  
+ All the charts are saved in files.
+ 
+ ### Generated Metrics & Charts
+ The analysis pipeline produces four key visualizations:
+ 
+ ### 1. Attacks: Total vs. Success
+ Visualizes the raw efficacy of exploits across the different protection tiers (Low, Medium, High).  
+ The goal is to immediately highlight how many attempts succeeded versus the total number of trials.
+ ### 2. Attack Success Reduction (ASR)
+ A derived metric representing the percentage decrease in exploit success rate when upgrading protections compared to the baseline ("Low").  
+
+ **Formula**: 
+$$ASR = \left( 1 - \frac{P(\text{success}|\text{High})}{P(\text{success}|\text{Low})} \right) \times 100$$
+
+ ### 3. Time to Compromise (TTC)
+ Tracks the average time (in seconds) required for the agent to successfully execute the exploit and trigger the marker function, to measure the effort required by an attacker.
+ ### 4. Binary Size Overhead
+ Compares the file size increase of the compiled binaries when enabling protections to quantify the "cost" of security in terms of storage.
